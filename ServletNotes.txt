@@ -1,0 +1,187 @@
+Agenda
+------------
+1. Introduction to Servlets: Understand the basics of servlets, their role in web development, and their advantages over traditional CGI scripts.
+
+2. Servlet API: Familiarize yourself with the Servlet API, including the servlet lifecycle, request and response objects, and the javax.servlet package.
+
+3. Servlet Configuration: Learn how to configure servlets using deployment descriptors (web.xml) or annotations (Java EE 6+).
+
+4. Handling HTTP Requests: Explore different methods for handling various HTTP request types (GET, POST, PUT, DELETE) and extracting data from request parameters.
+
+5. Handling HTTP Responses: Understand how to construct HTTP responses, set response headers, and send data back to the client.
+
+6. Session Management: Learn about session tracking techniques, such as using cookies or URL rewriting, to maintain session state between requests.
+
+7. Request and Session Attributes: Understand how to store and retrieve data in request and session scopes, and their differences.
+
+8. Servlet Filters: Explore the concept of servlet filters, which intercept requests and responses to perform pre-processing or post-processing tasks.
+
+9. Servlet Context: Learn about the servlet context and how to share data and resources across servlets using the ServletContext object.
+
+10. Error Handling: Understand how to handle and display custom error pages for different HTTP error codes and exceptions.
+
+11. File Upload and Download: Learn how to handle file uploads from clients and enable file downloads using servlets.
+
+12. Redirects and Forwarding: Understand the difference between redirects and forwarding, and when to use each technique.
+
+13. Authentication and Authorization: Explore techniques for user authentication and authorization using servlets, such as using servlet filters or integrating with Java EE security mechanisms.
+
+14. Asynchronous Servlets: Learn how to handle long-running tasks efficiently using asynchronous servlets and the Servlet 3.0+ async API.
+
+15. Servlet Containers and Deployment: Understand how servlets are deployed in servlet containers, such as Apache Tomcat or Jetty, and learn about deployment descriptors and container-specific configuration.
+
+16. Servlet Best Practices: Explore best practices for writing efficient, scalable, and maintainable servlet code, including code organization, exception handling, and performance optimization.
+
+17. JavaServer Pages (JSP): Get an introduction to JSP and understand how servlets can be combined with JSP for dynamic web page generation.
+
+18. MVC Frameworks: Gain an overview of popular Java-based MVC (Model-View-Controller) frameworks, such as Spring MVC or JavaServer Faces (JSF), that utilize servlets for web application development.
+
+
+Introcuction
+--------------------
+0. What is the web application
+	- Web app is an application that can be run over the internet through the browser.
+	- Web application can have multiple web pages, images, and other type of files.
+1. How typical web application works
+2. Explain the Request/ Response cycle
+3. Explain what are the client and server
+4. Components of web application
+	1. Client 
+	2. Server
+	3. Database
+	4. Static Resources - The files or resource that doesn't require any processing.
+		1. html files
+		2. css files
+		3. js filters
+		4. image
+		5. pdf
+	5. Dynamic Resources - The files that need to be processed before sending to the client.
+		1. Servlets
+		2. JSP
+		
+5. How Static Resources are processed
+6. How Dynamic Resources are processed.
+7. Server
+		- web server (Apache Tomcat)
+			- Servlet/jsp engine / container
+			-JDK
+		- Database Server
+
+Servlet
+	- What is the servlet
+		1. Servlets are Java-based server-side components that dynamically generate web content and handle client requests.
+		2. They provide a way to create dynamic web applications by extending the functionality of web servers.
+		3. Servlets are part of the Java Servlet API, which is a specification that defines how servlets should behave and interact with the web server.
+
+Important Servlet Terms
+--------------------------
+	-Servlet Lifecycle
+		Servlets have a well-defined lifecycle consisting of several stages, including initialization, request handling, and destruction. The container manages the lifecycle and ensures that servlet instances are created and destroyed as needed.
+	- Servlet API: 
+		The Servlet API provides a set of classes and interfaces that servlets use to interact with the servlet container. It includes classes for handling requests and responses, managing sessions, accessing servlet context, and more.
+	- Deployment and Configuration: 
+		Servlets are deployed as part of a web application, which typically consists of multiple servlets, along with other resources like HTML, CSS, and JavaScript files. 
+		
+		Deployment can be done using deployment descriptors (web.xml) or through annotations (Java EE 6+). Configuration options such as URL mappings and initialization parameters can be specified.
+
+Installation of Tomcat
+---------------------------
+
+1. Tomcat home: 
+2. Important Jar
+	-----------------
+		- servlet-api.jar
+		- jsp-api.jar
+		- el-api.jar
+		- tomcat-dhcp.jar
+3. Summary of tomcat directories
+------------------------------------
+1. bin: Contains the executable files and scripts for starting, stopping, and managing Tomcat server instances. It includes files like startup.bat (or startup.sh for Unix-based systems) and shutdown.bat (or shutdown.sh).
+
+2. conf: Contains configuration files for Tomcat. The main file is server.xml, which configures the server-specific settings like ports, connectors, and global resources. Other files include web.xml for default web application settings and various XML files for configuring realms, security, and logging.
+
+3. lib: Contains Java Archive (JAR) files required by Tomcat and its web applications. It includes Tomcat's own libraries and dependencies that provide additional functionality. You can also place third-party libraries in this directory that should be shared across multiple web applications.
+
+4. logs: Contains log files generated by Tomcat, including catalina.out, which contains standard output and error messages. It also includes access logs, which record details about incoming requests and other log files for different components.
+
+5. webapps: This directory is the default location for deploying web applications. Each web application is typically placed in a separate directory under the webapps directory. When Tomcat starts, it automatically deploys the web applications found in this directory.
+
+6. work: Temporary directory used by Tomcat for storing compiled JSPs, cached classes, and other temporary files generated during runtime. It is recommended not to modify or delete files in this directory manually.
+
+7. temp: Another temporary directory used by Tomcat for storing temporary files that are not related to specific web applications. It can include uploaded files, session data, and other temporary data. Like the work directory, it is advisable not to modify or delete files in this directory manually.
+
+
+Tomcat Configuration
+-------------------------
+1. What is the port
+2. How to change the port
+3. How to create tomcat-users and access the manage-gui
+--------------------------------------------------------------
+
+Directory structure of J2EE application
+---------------------------
+|-- WEB-INF
+|   |-- classes
+|   |   |-- com
+|   |   |   |-- example
+|   |   |   |   |-- YourServlet.class
+|   |   |-- other_class_files...
+|   |
+|   |-- lib
+|   |   |-- servlet-api.jar
+|   |   |-- other_dependency_jars...
+|   |
+|   |-- web.xml
+|
+|-- META-INF
+|   |-- context.xml
+|   |-- MANIFEST.MF
+|
+|-- index.html
+|-- other_html_files...
+
+
+Servlet
+----------------
+Example-1: Create a simple servlet, HelloServlet that prints Hello World.
+Example-2: Convert the above servlet using Servlet Api 3.0
+Example-3: Create a html form and show the user input using servlet.
+
+JSP:
+-------------
+1. JSP (JavaServer Pages) is a technology used for creating dynamic web pages in Java-based web applications.
+2. It allows you to mix HTML markup and Java code to generate dynamic content.
+3. JSP pages are processed by the web server before being sent to the client's browser.
+4. JSP allows you to embed Java code within the HTML markup using special tags such as <% %>, <%= %>, and <%! %>. These tags are used to execute Java code, evaluate expressions, and define variables or methods.
+5. Implicit Objects: JSP provides several implicit objects that are available within JSP pages without requiring explicit declaration. 
+Examples of implicit objects includes 
+	- request, 
+	- response, 
+	- session, 
+	- application, 
+	- out, 
+	- pageContext.
+
+
+
+JSP Tags
+----------------
+JSP (JavaServer Pages) provides various tags that allow you to perform specific actions or control the flow of execution within a JSP page. Here are some commonly used JSP tags and their uses:
+
+1. **Declaration Tags (`<%! ... %>`)**: Declaration tags are used to declare variables, methods, and other members that are accessible throughout the JSP page. They are typically placed at the beginning of the page.
+
+2. **Scriptlet Tags (`<% ... %>`)**: Scriptlet tags allow you to embed Java code within the JSP page. You can use them to perform dynamic operations, calculations, or conditionals. The Java code inside the scriptlet is executed when the page is processed.
+
+3. **Expression Tags (`<%= ... %>`)**: Expression tags are used to evaluate and display the value of an expression within the HTML markup. The expression can be a variable, a method call, or any valid Java expression. The result of the expression is automatically converted to a string and included in the HTML output.
+
+4. **Directive Tags (`<%@ ... %>`)**: Directive tags are used to provide instructions to the JSP container about how to process the JSP page. They are typically used to import Java classes, define error handling pages, or set page-level attributes such as content type or session behavior.
+
+5. **Include Directive (`<%@ include ... %>`)**: The include directive is used to include the content of another file into the current JSP page during the translation phase. It is useful for reusing common page elements or including external resources.
+
+6. **Taglib Directive (`<%@ taglib ... %>`)**: The taglib directive is used to declare and import a tag library into the JSP page. It allows you to use custom tags provided by the tag library, extending the functionality of JSP. The directive specifies the location and prefix associated with the tag library.
+
+7. **Action Tags (`<jsp:...>`)**: Action tags are used to invoke built-in actions or custom actions defined by tag libraries. They allow you to perform actions such as forwarding requests, including external files, handling exceptions, managing session attributes, and more.
+
+8. **Expression Language (EL) Tags (`${ ... }`)**: The EL tags are not traditional JSP tags but are a simplified expression language syntax used within JSP pages. They allow you to evaluate expressions and retrieve values from objects, including request parameters, session attributes, and other implicit objects.
+
+These are some of the commonly used JSP tags. Understanding and effectively using these tags can enhance the functionality and flexibility of your JSP pages, enabling you to create dynamic and interactive web applications.
