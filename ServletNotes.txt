@@ -113,8 +113,9 @@ Installation of Tomcat
 
 Tomcat Configuration
 -------------------------
+0. Set the JRE_HOME or JAVA_HOME environment variable with Java path
 1. What is the port
-2. How to change the port
+2. How to change the port -> Tomcat dirctory-> conf -> sever.xml -> change 8080
 3. How to create tomcat-users and access the manage-gui
 --------------------------------------------------------------
 
@@ -184,4 +185,385 @@ JSP (JavaServer Pages) provides various tags that allow you to perform specific 
 
 8. **Expression Language (EL) Tags (`${ ... }`)**: The EL tags are not traditional JSP tags but are a simplified expression language syntax used within JSP pages. They allow you to evaluate expressions and retrieve values from objects, including request parameters, session attributes, and other implicit objects.
 
-These are some of the commonly used JSP tags. Understanding and effectively using these tags can enhance the functionality and flexibility of your JSP pages, enabling you to create dynamic and interactive web applications.
+
+Example-4: Rewrite the Example-3 again with the use of only JSP
+Example-5: Rewrite the Example-4 and store the data in a file called subscriber.txt
+that should be created in WEB-INF directory.
+Example-6: Rewrite the Example-5 with Servlet.
+
+Servlet Life Cycle
+--------------------------------------
+The life cycle of a servlet refers to the series of stages that a servlet goes through, from its initialization to its destruction. 
+
+1. **Initialization**: 
+	During initialization, the servlet container creates an instance of the servlet and initializes it by calling the `init()` method. This method is called only once during the lifetime of the servlet. It is typically used to perform one-time setup tasks, such as loading configurations, establishing database connections, or initializing resources.
+
+2. **Request Handling**: 
+	Once the servlet is initialized, it is ready to handle client requests. For each incoming request, the servlet container calls the `service()` method of the servlet. The `service()` method determines the type of the request (GET, POST, etc.) and delegates the request to the appropriate method (`doGet()`, `doPost()`, etc.) based on the HTTP method.
+
+3. **Request Processing**: 
+	The servlet's request processing methods, such as `doGet()` and `doPost()`, handle the request-specific logic. These methods are responsible for processing the request parameters, performing business operations, generating dynamic content, and interacting with databases or other external resources.
+
+4. **Response Generation**: 
+	After the request processing is complete, the servlet generates the response to be sent back to the client. The response typically includes HTML content, JSON data, or other forms of output. The servlet sets the response headers, writes the response body, and may also perform redirects or set cookies.
+
+5. **Destroying**: 
+	The servlet container calls the `destroy()` method when it decides to remove the servlet from service. This typically occurs when the container is shutting down or when the servlet is being unloaded due to configuration changes or application redeployment. The `destroy()` method is used to release any resources held by the servlet, close database connections, or perform cleanup tasks.
+
+Example-7:
+	Create a servlet HitCounterServlet to count the incoming request to that srevlet
+	and display the counter using a jsp page.
+
+HttpServletRequest Methods
+------------------------------
+0. getHttpMethod(): String
+1. **`getParameter(String name)`**: Retrieves the value of a request parameter specified by its name. It is commonly used to access form data or query parameters sent with the request.
+
+2. **`getParameterValues(String name)`**: Retrieves an array of values for a request parameter specified by its name. This method is used when a parameter can have multiple values, such as checkboxes with the same name.
+
+3. **`getServletContext()`**: Returns the `ServletContext` associated with the servlet.
+4. request.getRequestDispatcher()
+
+What is MVC
+--------------
+	M - Model
+	V - Views
+	C - Controllers
+
+Set & Get Data(Attributes) in Request
+---------------------
+	- request.setAttribute(String key, Object val):void
+	- request.getAttribute(String Key): Object
+
+RequestDispatcher
+--------------------
+The RequestDispatcher interface in Java Servlet provides a way to forward a request from one servlet to another servlet or include the response of another servlet in the current response. It enables servlets to collaborate and share data during request processing.
+
+The RequestDispatcher interface has two main methods:
+	-forward(ServletRequest request, ServletResponse response)
+	-include(ServletRequest request, ServletResponse response)
+
+	Getting RequestDispatcher object & forware request
+	---------------------------------------------------------
+	// Inside the doPost() or doGet() method of Servlet1
+	- RequestDispatcher dispatcher = request.getRequestDispatcher("/Servlet2");
+	dispatcher.forward(request, response);
+
+
+Response Redirect
+--------------------
+	- response.sendRedirect("/myapp/otherServlet");
+Note:
+	It's important to note that when a redirect is performed, the client browser makes a new request to the specified URL, and the request and response objects are recreated. Therefore, any data stored in request attributes or parameters will not be preserved across the redirect unless you explicitly pass them as query parameters or through session attributes.
+
+
+Data validation
+---------------------------
+Explain the example of data validation 
+
+Include a file in jsp
+----------------------------
+Compile time
+<%@inlcude file="url" %>
+
+Run time include
+-------------------
+<jsp:include page="url" />
+
+
+Setting The error page / exception handler in configuration (web.xml)
+-------------------------------------------------------
+<web-app>
+    <!-- Other configuration elements -->
+    
+    <error-page>
+        <exception-type>java.lang.Exception</exception-type>
+        <location>/errorPage.jsp</location>
+    </error-page>
+    
+    <error-page>
+        <error-code>404</error-code>
+        <location>/notFound.jsp</location>
+    </error-page>
+    
+    <!-- Other error-page mappings -->
+</web-app>
+
+Get the exception on exception page
+------------------------------------------
+<%@ page isErrorPage="true" %>
+<%@ page import="java.io.*" %>
+<%@ page import="java.util.*" %>
+<%@ page import="javax.servlet.*" %>
+<%@ page import="javax.servlet.http.*" %>
+<html>
+<head>
+    <title>Error Page</title>
+</head>
+<body>
+    <h1>Error Page</h1>
+    <%
+        Throwable exception = (Throwable) request.getAttribute("javax.servlet.error.exception");
+        if (exception != null) {
+            out.println("<p>An exception occurred: " + exception.getMessage() + "</p>");
+        } else {
+            out.println("<p>An error occurred.</p>");
+        }
+    %>
+</body>
+</html>
+
+
+
+
+Setting error page using annotation
+-------------------------------------------
+
+@WebServlet(name = "MyServlet", urlPatterns = { "/myServlet" })
+public class MyServlet extends HttpServlet {
+    // Servlet code goes here
+    
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        // Exception handling code goes here
+    }
+    
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        // Exception handling code goes here
+    }
+    
+    @Override
+    public void init() throws ServletException {
+        // Initialization code goes here
+    }
+    
+    @Override
+    public void destroy() {
+        // Cleanup code goes here
+    }
+    
+    @Override
+    public String getServletInfo() {
+        // Servlet information goes here
+    }
+    
+    @Override
+    public void service(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try {
+            // Servlet processing code goes here
+        } catch (Exception e) {
+            request.getRequestDispatcher("/errorPage.jsp").forward(request, response);
+        }
+    }
+    
+    @Override
+    public void service(ServletRequest request, ServletResponse response)
+            throws ServletException, IOException {
+        service((HttpServletRequest) request, (HttpServletResponse) response);
+    }
+}
+
+Initialization Parameter
+--------------------------
+Initialization parameters in servlets allow you to pass configuration values to your servlet at the time of initialization. These parameters can be defined in the deployment descriptor (web.xml) or using annotations. Initialization parameters provide a way to configure the behavior of your servlet without modifying its code. Here are the ways to define initialization parameters in a servlet:
+
+
+Using web.xml (Deployment Descriptor):
+In the web.xml file, you can define initialization parameters for a servlet using the <init-param> element within the <servlet> element. Here's an example:
+
+<web-app>
+  <!-- Other configuration elements -->
+  <servlet>
+    <servlet-name>MyServlet</servlet-name>
+    <servlet-class>com.example.MyServlet</servlet-class>
+    <init-param>
+      <param-name>param1</param-name>
+      <param-value>value1</param-value>
+    </init-param>
+    <init-param>
+      <param-name>param2</param-name>
+      <param-value>value2</param-value>
+    </init-param>
+  </servlet>
+  <!-- Other servlet mappings -->
+</web-app>
+
+
+Using Annotations:
+----------------------
+With the Servlet API 3.0 and above, you can also use annotations to define initialization parameters directly in your servlet class. Here's an example:
+
+@WebServlet(name = "MyServlet", urlPatterns = { "/myservlet" },
+            initParams = {
+                @WebInitParam(name = "param1", value = "value1"),
+                @WebInitParam(name = "param2", value = "value2")
+            })
+public class MyServlet extends HttpServlet {
+    // Servlet code goes here
+}
+
+
+Retrieve Init Parameter
+------------------------------
+To access the initialization parameters within the servlet, you can use the getInitParameter() method of the ServletConfig object. For example:
+
+
+public void init(ServletConfig config) throws ServletException {
+    super.init(config);
+    
+    String param1 = config.getInitParameter("param1");
+    String param2 = config.getInitParameter("param2");
+    
+    // Use the initialization parameters
+}
+
+
+Context parameter
+--------------------------
+
+Context parameters, also known as servlet context parameters or application-wide parameters, allow you to define global configuration values for your entire web application. These parameters are accessible to all servlets, filters, and other components within the application. Context parameters are useful when you need to share common configuration values across multiple servlets or components.
+
+Using web.xml (Deployment Descriptor):
+-----------------------------------------
+
+<web-app>
+  <!-- Other configuration elements -->
+  <context-param>
+    <param-name>param1</param-name>
+    <param-value>value1</param-value>
+  </context-param>
+  <context-param>
+    <param-name>param2</param-name>
+    <param-value>value2</param-value>
+  </context-param>
+</web-app>
+
+
+Using Annotations:
+--------------------------
+	Will be explained later.
+
+
+
+public void doGet(HttpServletRequest request, HttpServletResponse response) {
+    ServletContext context = request.getServletContext();
+    
+    String param1 = context.getInitParameter("param1");
+    String param2 = context.getInitParameter("param2");
+    
+    // Use the context parameters
+}
+
+
+Session and Cookies
+---------------------------
+
+- How session tracking works in java
+- Getting the session:
+	HttpSession session = request.getSession();
+-Setting session attributes:
+	session.setAttribute("attributeName", attributeValue);
+-Getting session attributes:
+	Object attributeValue = session.getAttribute("attributeName");
+-Removing session attributes:
+	session.removeAttribute("attributeName");
+-Invalidating the session:
+	session.invalidate();
+------------------------------------------
+
+Other methods
+----------------
+-getId():
+Returns the unique identifier assigned to the session.
+
+-getCreationTime():
+Returns the time (in milliseconds) when the session was created.
+
+-getLastAccessedTime():
+Returns the time (in milliseconds) when the session was last accessed by the client.
+
+-setMaxInactiveInterval(int interval):
+Sets the maximum time (in seconds) that the session can remain inactive before it is invalidated. A value of 0 or negative indicates that the session should never expire due to inactivity.
+
+-getMaxInactiveInterval():
+Returns the maximum time (in seconds) that the session can remain inactive before it is invalidated.
+
+Example: Create an example to login and logout process to show the session demo.
+
+Cookie
+------------
+A cookie is a small piece of data that a web server sends to a user's web browser and is stored on the user's computer. It is primarily used to track and store information about the user's interactions with a website.
+
+In Java, you can create and use cookies using the `javax.servlet.http.Cookie` class provided by the Servlet API. Here's how you can create and use a cookie in Java:
+
+1. Creating a cookie:
+   To create a cookie, you instantiate a new `Cookie` object and provide the name and value of the cookie. Here's an example:
+
+   Cookie cookie = new Cookie("cookieName", "cookieValue");
+
+   In this example, a cookie named "cookieName" is created with the value "cookieValue".
+
+2. Setting additional cookie properties:
+   You can set additional properties for the cookie, such as the maximum age, domain, path, and whether it is secure or not. Here's an example:
+
+   
+   cookie.setMaxAge(3600); // Set the cookie's maximum age in seconds
+   cookie.setDomain(".example.com"); // Set the domain for which the cookie is valid
+   cookie.setPath("/"); // Set the path within the domain for which the cookie is valid
+   cookie.setSecure(true); // Set whether the cookie should only be transmitted over HTTPS
+   
+   These properties allow you to control the lifespan, scope, and security of the cookie.
+
+3. Adding the cookie to the response:
+   To send the cookie to the client's browser, you add it to the response using the `addCookie()` method of the `HttpServletResponse` object. Here's an example:
+
+   response.addCookie(cookie);
+   
+   The cookie will be included in the response headers and sent to the client's browser.
+
+4. Retrieving cookies from the request:
+   To retrieve cookies sent by the client's browser, you can use the `getCookies()` method of the `HttpServletRequest` object. Here's an example:
+
+   Cookie[] cookies = request.getCookies();
+   
+   The `getCookies()` method returns an array of `Cookie` objects that were sent by the client.
+
+5. Accessing cookie properties:
+   You can access various properties of a cookie, such as its name, value, maximum age, and other attributes. Here's an example:
+
+   String cookieName = cookie.getName();
+   String cookieValue = cookie.getValue();
+   int maxAge = cookie.getMaxAge();
+   
+   These properties allow you to retrieve and use the information stored in the cookie.
+
+By creating and using cookies in Java, you can store and retrieve information on the client's browser, allowing you to maintain state and personalize user experiences in web applications.
+
+
+Utitlity class to access the cookie value
+----------------------------------------
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+
+public class CookieUtils {
+    public static String getCookie(HttpServletRequest request, String item) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals(item)) {
+                    return cookie.getValue();
+                }
+            }
+        }
+        return null;
+    }
+}
+
+-Example: Create and example of setting user preference or theme selected using java.
+
+
+

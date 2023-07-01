@@ -1,4 +1,4 @@
-package Business;
+package business;
 
 public class User {
     private String firstname;
@@ -11,15 +11,19 @@ public class User {
         this.email = email;
     }
 
+    public User() {
+        this("NA", "NA", "NA");
+    }
+
     public String getFirstname() {
-        return firstname;
+        return firstname.toUpperCase();
     }
 
     public String getLastname() {
-        return lastname;
+        return lastname.toUpperCase();
     }
-
+    
     public String getEmail() {
-        return email;
+        return email.toUpperCase();
     }
 }
