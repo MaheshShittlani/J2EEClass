@@ -458,6 +458,31 @@ public void doGet(HttpServletRequest request, HttpServletResponse response) {
     // Use the context parameters
 }
 
+State Management
+------------------------
+1. Query String
+2. Cookie
+3. Session
+4. Hidden form field
+
+
+Query String
+-----------------------
+Query is a way in which we can transfer data by passing in url in key and value pair.
+This method is passing data similarly submitting the form by GET method.
+
+Example: 
+    /products.jsp?category=electronics
+    /products.jsp?category=fan
+    /products.jsp?category=mobile&company=samsung
+
+How to retrieve data from URL
+------------------------------------
+URL data is always pushed on the request object so can be fetch from request.
+
+request.getParameter("category"); // electronics/ fan/mobile
+request.getParameter("company")/ // null / 
+
 
 Session and Cookies
 ---------------------------
