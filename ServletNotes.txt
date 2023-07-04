@@ -591,4 +591,135 @@ public class CookieUtils {
 -Example: Create and example of setting user preference or theme selected using java.
 
 
+JavaBeans and standard jsp tags
+----------------------------------
+What is Java Beans
+------------------------------
+Simple Java Classes with the following properties...
 
+1. Class Structure: 
+    JavaBeans are regular Java classes with private instance variables (properties), public getter and setter methods (accessors and mutators), and optional additional methods for functionality.
+2. Properties: 
+    JavaBeans typically have private instance variables (fields) that represent properties of the bean. These properties are accessed and modified through public getter and setter methods, following the naming conventions getProperty() and setProperty(value).
+3. Default Constructor: 
+    JavaBeans should have a default no-argument constructor that allows the bean to be instantiated without any arguments. This allows for easy initialization and configuration of the bean using setter methods.
+4. Serializable: 
+    JavaBeans can implement the java.io.Serializable interface to support serialization, enabling objects to be converted into a byte stream for storage or transmission.
+5. Customization and Event Handling: 
+    JavaBeans often provide methods for customization and event handling. Customization methods allow external code to configure the properties of the bean, while event handling methods allow the bean to interact with other components through events and listeners.
+
+
+User class as JavaBeans
+---------------------
+import java.io.Serializable;
+
+public class User implements Serializable {
+    private String firstName;
+    private String lastName;
+    private String email;
+
+    public User() {
+        // Default constructor
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+}
+
+
+Use a JavaBean
+-------------------------
+    <jsp:useBean id="user" class="business.User" scope="request" />
+
+Set the bean property
+------------------------
+    <jsp:setProperty name="user" property="firstName" value="John" />
+    <jsp:setProperty name="user" property="lastName" value="Doe" />
+    <jsp:setProperty name="user" property="email" value="johndoe@example.com" />
+Get the bean property
+------------------------
+    <p>First Name: <jsp:getProperty name="user" property="firstName" /></p>
+    <p>Last Name: <jsp:getProperty name="user" property="lastName" /></p>
+    <p>Email: <jsp:getProperty name="user" property="email" /></p>
+
+Scope Values
+---------------------
+1. Request Scope: Objects stored in this scope are available within the same HTTP request.
+2. Session Scope: Objects stored in this scope are accessible across multiple requests from the same client during their session.
+3. Application Scope: Objects stored in this scope are available to all users of the application and persist until the application is stopped or restarted.
+4. Page Scope: Objects stored in this scope are accessible only within the current JSP page and are destroyed when the page processing is complete.
+
+
+Expression language
+------------------------
+EL (Expression Language) is a feature introduced in JavaServer Pages (JSP) that provides an easy and concise way to access and manipulate data within JSP pages. It is a simplified language for accessing JavaBeans, arrays, collections, and other objects in JSP.
+
+Some key features of EL include:
+
+1. Expression Syntax: EL uses `${expression}` syntax to access and evaluate expressions. For example, `${user.firstName}` retrieves the value of the `firstName` property of a JavaBean named `user`.
+
+2. Accessing Object Properties: EL allows direct access to properties of objects without the need for explicit Java code. It automatically calls the getter methods to retrieve property values.
+
+3. Evaluating Expressions: EL supports arithmetic, relational, logical, and other operators for evaluating expressions. For example, `${num1 + num2}` performs addition of two numbers.
+
+4. Method Invocation: EL allows invoking methods on objects using the `${object.method()}` syntax. For example, `${user.getName()}` calls the `getName()` method of the `user` object.
+
+5. Accessing Collection and Array Elements: EL provides a simplified syntax to access elements of arrays and collections. For example, `${myArray[0]}` retrieves the element at index 0 of an array named `myArray`.
+
+6. Conditional Expressions: EL supports conditional expressions using the ternary operator `? :`. For example, `${age >= 18 ? 'Adult' : 'Minor'}` returns either 'Adult' or 'Minor' based on the value of the `age` variable.
+
+EL simplifies the process of accessing and manipulating data within JSP pages, reducing the need for embedded Java code. It enhances the readability and maintainability of JSP pages by providing a more concise syntax for data handling.
+
+
+Example-1:
+--------------
+    request.setAttribute("currentDate",new Date());
+
+Accession on jsp page
+------------------------
+    ${currentDate}
+
+Example-2:
+-------------
+    User user  = new User(firstName, lastName, email);
+    session.setAttribute("user",user);
+
+accession object on jsp
+------------------------
+    ${user.firstName}
+    OR
+    ${user['firstName']}
+
+Sequence of scope that is searched to find the attribute
+----------------------------------
+    page
+    request
+    session
+    application
+
+Accessing the object from an specific scope
+----------------------------------------------
+${scope.object.property}
+Example:
+    ${sessionScope.user.firstName}
