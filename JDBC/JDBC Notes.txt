@@ -218,47 +218,114 @@ Remember to handle any exceptions that may occur during the process using try-ca
 By following these steps, you can connect to a database and perform various operations using a Type 4 JDBC driver in your Java application. Make sure to consult the documentation provided by the database vendor for specific details on configuring the connection URL, supported SQL syntax, and other database-specific information.
 
 
-Fetch the data from database
--------------------------------
+Example-1: Fetch the data from database
+Example-2: Insert data into a database using Statement
+Example-3: Insert data into a database using PreparedStatement
 
-Certainly! Here's an example of JDBC code that fetches data from a table in a MySQL database:
 
-```java
-import java.sql.*;
+java.sql.DriverManager
+------------------------
+The `DriverManager` class in JDBC provides several methods to manage JDBC drivers and connections. Here are some of the commonly used methods of the `DriverManager` class:
 
-public class JDBCFetchExample {
-    public static void main(String[] args) {
-        String url = "jdbc:mysql://localhost:3306/mydatabase";
-        String username = "your_username";
-        String password = "your_password";
-        
-        try (Connection connection = DriverManager.getConnection(url, username, password)) {
-            String sql = "SELECT * FROM employees";
-            
-            try (Statement statement = connection.createStatement();
-                 ResultSet resultSet = statement.executeQuery(sql)) {
-                
-                while (resultSet.next()) {
-                    int id = resultSet.getInt("id");
-                    String name = resultSet.getString("name");
-                    String email = resultSet.getString("email");
-                    
-                    System.out.println("ID: " + id);
-                    System.out.println("Name: " + name);
-                    System.out.println("Email: " + email);
-                    System.out.println("---------------------------");
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-}
-```
+1. `registerDriver(Driver driver)`: Registers a JDBC driver with the `DriverManager`. The driver instance provided as a parameter is added to the list of registered drivers that can be used to establish database connections.
 
-Make sure to replace `"jdbc:mysql://localhost:3306/mydatabase"` with the actual JDBC URL specific to your MySQL database. Additionally, replace `"your_username"` and `"your_password"` with your MySQL username and password, respectively.
+2. `getConnection(String url)`: Attempts to establish a connection to the database using the given JDBC URL. The appropriate driver is automatically selected from the registered drivers based on the URL.
 
-In this example, we establish a connection to the MySQL database, create a `Statement` object, execute a SELECT query (`SELECT * FROM employees`), and retrieve the results using a `ResultSet` object. We then loop through the result set and print the values of the `id`, `name`, and `email` columns for each row.
+3. `getConnection(String url, String user, String password)`: Attempts to establish a connection to the database using the given JDBC URL, username, and password. The appropriate driver is selected based on the URL.
 
-Remember to include the appropriate MySQL JDBC driver JAR file in your project's classpath.
-    
+4. `getConnection(String url, Properties info)`: Attempts to establish a connection to the database using the given JDBC URL and connection properties. The properties can include username, password, and other driver-specific settings.
+
+5. `getDrivers()`: Retrieves an enumeration of all the JDBC drivers registered with the `DriverManager`.
+
+6. `getLoginTimeout()`: Retrieves the maximum time in seconds that the `DriverManager` waits while attempting to establish a database connection. If the timeout is exceeded, a `SQLException` is thrown.
+
+7. `setLoginTimeout(int seconds)`: Sets the maximum time in seconds that the `DriverManager` waits while attempting to establish a database connection.
+
+8. `deregisterDriver(Driver driver)`: Deregisters a JDBC driver from the `DriverManager`. The driver instance provided as a parameter is removed from the list of registered drivers.
+
+These methods provide functionality to manage drivers and establish database connections in JDBC. Remember to handle `SQLException` and other exceptions that may occur when using these methods.
+
+It's important to note that with the introduction of JDBC 4.0, the `DriverManager` class automatically detects and registers drivers through the service provider mechanism, so manually registering drivers using `registerDriver()` is generally not necessary in modern JDBC applications.
+
+java.sql.Connection
+------------------------
+The `Connection` interface in JDBC represents a connection to a database. It provides methods to interact with the database and perform various operations. Here are some commonly used methods of the `Connection` class:
+
+1. `createStatement()`: Creates a `Statement` object that can be used to execute SQL statements or queries on the database.
+
+2. `prepareStatement(String sql)`: Prepares a SQL statement for execution. The SQL statement can contain parameters that can be set using the `PreparedStatement` object.
+
+3. `prepareCall(String sql)`: Prepares a SQL call statement or stored procedure for execution. The SQL call statement can contain parameters that can be set using the `CallableStatement` object.
+
+4. `close()`: Closes the connection to the database, releasing any resources associated with it.
+
+5. `commit()`: Commits the current transaction in auto-commit mode. If the connection is not in auto-commit mode, this method is typically used to commit the changes explicitly.
+
+6. `rollback()`: Rolls back the current transaction. If the connection is not in auto-commit mode, this method is used to roll back the changes explicitly.
+
+7. `setAutoCommit(boolean autoCommit)`: Sets the auto-commit mode of the connection. When auto-commit is enabled, each SQL statement is treated as a separate transaction and automatically committed. When disabled, you need to call `commit()` or `rollback()` explicitly to manage transactions.
+
+8. `isClosed()`: Checks if the connection to the database is closed.
+
+9. `getMetaData()`: Retrieves the `DatabaseMetaData` object, which provides information about the database, such as supported features, tables, columns, etc.
+
+10. `setReadOnly(boolean readOnly)`: Sets the read-only mode of the connection. When read-only is enabled, it indicates that the connection is used for read operations only, and attempts to modify data will result in an exception.
+
+
+Statement Interface Methods
+----------------------------
+The `Statement` interface in JDBC represents a statement that can be executed against a database. It provides methods to execute SQL queries and statements, retrieve results, and perform other operations. Here are some commonly used methods of the `Statement` class:
+
+1. `execute(String sql)`: Executes an SQL statement and returns a boolean indicating whether the statement returned a `ResultSet` or not. This method can be used to execute any SQL statement, including DDL and DML statements.
+
+2. `executeQuery(String sql)`: Executes an SQL SELECT query and returns a `ResultSet` object containing the query results. Use this method when executing SELECT statements that return rows from the database.
+
+3. `executeUpdate(String sql)`: Executes an SQL statement that performs an INSERT, UPDATE, DELETE, or DDL operation and returns the number of affected rows. This method should be used for statements that modify data or perform DDL operations.
+
+4. `addBatch(String sql)`: Adds an SQL statement to the batch for execution. The statements added to the batch can be executed together using the `executeBatch()` method.
+
+5. `executeBatch()`: Executes all the statements added to the batch using the `addBatch()` method and returns an array of integers representing the update counts for each statement.
+
+6. `getResultSet()`: Retrieves the `ResultSet` object generated by the most recent execution of a query. This method is used after executing a SELECT query to retrieve the results.
+
+7. `getUpdateCount()`: Retrieves the update count for the most recent execution of an SQL statement that is not a query. This method is used to get the number of affected rows after executing INSERT, UPDATE, DELETE, or DDL statements.
+
+8. `getGeneratedKeys()`: Retrieves a `ResultSet` object containing the auto-generated keys after executing an INSERT statement with the `Statement.RETURN_GENERATED_KEYS` flag set.
+
+9. `close()`: Closes the statement, releasing any resources associated with it.
+
+
+Note that the `Statement` interface is extended by the `PreparedStatement` and `CallableStatement` interfaces, which provide additional methods for executing parameterized queries and stored procedures, respectively.
+
+PreparedStatement Interface
+-------------------------
+setXXX(int columnIndex, XXX)
+
+ResultSet Interface
+-------------------
+The `ResultSet` interface in JDBC represents a result set obtained from executing an SQL query against a database. It provides methods to navigate through the result set and retrieve data. Here are some commonly used methods of the `ResultSet` class:
+
+1. `next()`: Moves the cursor to the next row in the result set. Returns `true` if there is a next row, `false` otherwise.
+
+2. `getString(int columnIndex)` or `getString(String columnLabel)`: Retrieves the value of the specified column as a `String` from the current row.
+
+3. `getInt(int columnIndex)` or `getInt(String columnLabel)`: Retrieves the value of the specified column as an `int` from the current row.
+
+4. `getDouble(int columnIndex)` or `getDouble(String columnLabel)`: Retrieves the value of the specified column as a `double` from the current row.
+
+5. `getObject(int columnIndex)` or `getObject(String columnLabel)`: Retrieves the value of the specified column as an `Object` from the current row. This method can be used to retrieve values of any data type.
+
+6. `getDate(int columnIndex)` or `getDate(String columnLabel)`: Retrieves the value of the specified column as a `java.sql.Date` object from the current row.
+
+7. `getTime(int columnIndex)` or `getTime(String columnLabel)`: Retrieves the value of the specified column as a `java.sql.Time` object from the current row.
+
+8. `getTimestamp(int columnIndex)` or `getTimestamp(String columnLabel)`: Retrieves the value of the specified column as a `java.sql.Timestamp` object from the current row.
+
+9. `wasNull()`: Returns whether the value retrieved from the last column read was `null`.
+
+10. `close()`: Closes the result set, releasing any resources associated with it.
+
+
+
+It's important to note that the cursor of the `ResultSet` starts before the first row, so you need to call `next()` to move to the first row before accessing any data.
+
